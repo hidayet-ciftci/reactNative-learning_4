@@ -1,8 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { handleLogin } from "@/services/login";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
-  Alert,
   Button,
   StyleSheet,
   Text,
@@ -13,44 +12,6 @@ import {
 const LoginScreen = () => {
   const [username, setUsername] = useState<string>("emilys");
   const [password, setPassword] = useState<string>("emilyspass");
-  const params = useLocalSearchParams<{
-    username: string;
-    password: string;
-  }>();
-
-  useEffect(() => {
-    if (params.username) {
-      setUsername(params.username);
-      setPassword(params.password);
-    }
-  }, [params]);
-
-  const handleLogin = async () => {
-    try {
-      const response = await fetch("https://dummyjson.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-          expiresInMins: 30,
-        }),
-      });
-      if (!response.ok) {
-        Alert.alert("Hata", "şifre veya kullanıcı adı yanlış");
-        return;
-      }
-      const data = await response.json();
-      if (data.accessToken) {
-        await AsyncStorage.setItem("user_Token", data.accessToken);
-        console.log("giriş yapıldı");
-      } else throw new Error("token hatası");
-      router.push("/profile");
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-      Alert.alert("Hata", "Bağlantı hatası!");
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -70,7 +31,12 @@ const LoginScreen = () => {
         placeholder="Şifre"
         secureTextEntry
       />
-      <Button title="Giriş Yap" onPress={handleLogin} />
+      <Button
+        title="Giriş Yap"
+        onPress={() => {
+          handleLogin(username, password);
+        }}
+      />
       <View style={styles.register}>
         <Text style={[{ color: "white" }]}>Hesabın yok mu? </Text>
         <TouchableOpacity

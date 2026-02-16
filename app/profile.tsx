@@ -1,3 +1,4 @@
+import { fetchUserProfile } from "@/services/profile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -10,57 +11,31 @@ import {
   Text,
   View,
 } from "react-native";
+export interface profile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  maidenName: string;
+  age: number;
+  gender: string;
+  email: string;
+  image: string;
+  phone: string;
+  username: string;
+}
 const ProfileScreen = () => {
   const router = useRouter();
-  const [user, setUser] = useState<{
-    id: number;
-    firstName: string;
-    lastName: string;
-    maidenName: string;
-    age: number;
-    gender: string;
-    email: string;
-    image: string;
-    phone: string;
-    username: string;
-  }>();
+  const [user, setUser] = useState<profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserProfile = async () => {
-    try {
-      const token = await AsyncStorage.getItem("user_Token");
-
-      if (!token) {
-        Alert.alert("Hata", "Giriş yapmamışsınız!");
-        router.replace("/");
-        return;
-      }
-
-      const response = await fetch("https://dummyjson.com/user/me", {
-        method: "GET",
-        headers: { Authorization: "Bearer " + token },
-      });
-      const data = await response.json();
-      console.log(data);
+  const handleProfile = async () => {
+    const profileData = await fetchUserProfile();
+    if (profileData) {
+      setUser(profileData);
       setLoading(false);
-      if (!response.ok) return;
-      setUser({
-        id: data.id,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        maidenName: data.maidenName,
-        age: data.age,
-        gender: data.gender,
-        email: data.email,
-        image: data.image,
-        phone: data.phone,
-        username: data.username,
-      });
-    } catch (error) {
-      console.error("Profil Yükleme Hatası:", error);
-      Alert.alert("Hata", "Veri çekilemedi.");
-    } finally {
-      setLoading(false);
+    } else {
+      Alert.alert("Oturum Kapalı", "Lütfen tekrar giriş yapın."); // Router'ı component , içinde kullanmak best practice
+      router.replace("/"); // api ya da services.ts içinde sadece o func işlemi olsun, data return.
     }
   };
 
@@ -69,7 +44,7 @@ const ProfileScreen = () => {
     router.replace("/");
   };
   useEffect(() => {
-    fetchUserProfile();
+    handleProfile();
   }, []);
 
   if (loading) {

@@ -1,44 +1,38 @@
+import { handleSubmit } from "@/services/register";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-const LoginScreen = () => {
-  const [user, setUser] = useState<{
-    firstName: string;
-    lastName: string;
-    age: number | null;
-    username: string;
-    password: string;
-  }>({ firstName: "", lastName: "", age: null, username: "", password: "" });
 
-  const handleSubmit = async () => {
-    const API_URL = "https://dummyjson.com/users/add";
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
+export interface user {
+  firstName: string;
+  lastName: string;
+  age: string;
+  username: string;
+  password: string;
+}
+const LoginScreen = () => {
+  const [user, setUser] = useState<user>({
+    firstName: "",
+    lastName: "",
+    age: "",
+    username: "",
+    password: "",
+  });
+
+  const handleRegister = async () => {
+    if (await handleSubmit(user)) {
+      setUser({
+        firstName: "",
+        lastName: "",
+        age: "",
+        username: "",
+        password: "",
       });
-      const data = await response.json();
-      if (data.id) {
-        const username = user.username;
-        const password = user.password;
-        setUser({
-          firstName: "",
-          lastName: "",
-          age: null,
-          username: "",
-          password: "",
-        });
-        router.push({
-          pathname: "/(tabs)",
-          params: { username: username, password: password },
-        });
-      }
-    } catch (error) {
-      console.error(error);
+      router.push({
+        pathname: "/(tabs)",
+      });
     }
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.titleView}>
@@ -63,12 +57,12 @@ const LoginScreen = () => {
       <TextInput
         keyboardType="numeric"
         style={styles.input}
-        value={user.age === 0 || user.age === null ? "" : String(user.age)}
+        value={user.age}
         onChangeText={(text) => {
           const numericValue = text.replace(/[^0-9]/g, "");
           setUser({
             ...user,
-            age: Number(numericValue),
+            age: numericValue,
           });
         }}
         placeholder="age"
@@ -90,7 +84,7 @@ const LoginScreen = () => {
         placeholder="Şifre"
         secureTextEntry
       />
-      <Button title="Kayıt ol" onPress={handleSubmit} />
+      <Button title="Kayıt ol" onPress={handleRegister} />
     </View>
   );
 };
