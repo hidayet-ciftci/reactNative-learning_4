@@ -1,30 +1,28 @@
 import { API_LOGIN } from "@/constants/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import axios from "axios";
 import { Alert } from "react-native";
+interface user {
+  username: string;
+  password: string;
+  expiresInMins: number;
+}
 export const handleLogin = async (username: string, password: string) => {
+  const user: user = {
+    username: username,
+    password: password,
+    expiresInMins: 30,
+  };
   try {
-    const response = await fetch(API_LOGIN, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        expiresInMins: 30,
-      }),
-    });
-    if (!response.ok) {
-      Alert.alert("Hata", "şifre veya kullanıcı adı yanlış");
-      return;
-    }
-    const data = await response.json();
+    const response = await axios.post(API_LOGIN, user, { timeout: 10000 });
+    const data = response.data;
     if (data.accessToken) {
       await AsyncStorage.setItem("user_Token", data.accessToken);
-      console.log("giriş yapıldı");
+      return true;
     } else throw new Error("token hatası");
-    router.push("/profile");
-  } catch (error) {
+  } catch (error: any) {
     console.error("Bir hata oluştu:", error);
     Alert.alert("Hata", "Bağlantı hatası!");
+    return false;
   }
 };

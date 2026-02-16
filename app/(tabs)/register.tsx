@@ -29,7 +29,7 @@ const LoginScreen = () => {
         password: "",
       });
       router.push({
-        pathname: "/(tabs)",
+        pathname: "/profile",
       });
     }
   };

@@ -2,6 +2,7 @@ import { handleLogin } from "@/services/login";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   Button,
   StyleSheet,
   Text,
@@ -12,6 +13,16 @@ import {
 const LoginScreen = () => {
   const [username, setUsername] = useState<string>("emilys");
   const [password, setPassword] = useState<string>("emilyspass");
+
+  const checkLogin = async () => {
+    if (await handleLogin(username, password)) {
+      console.log("giriş yapıldı");
+      router.replace("/profile");
+    } else {
+      console.log("wrong login");
+      Alert.alert("Wrong password or Username", "try again");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -31,12 +42,7 @@ const LoginScreen = () => {
         placeholder="Şifre"
         secureTextEntry
       />
-      <Button
-        title="Giriş Yap"
-        onPress={() => {
-          handleLogin(username, password);
-        }}
-      />
+      <Button title="Giriş Yap" onPress={checkLogin} />
       <View style={styles.register}>
         <Text style={[{ color: "white" }]}>Hesabın yok mu? </Text>
         <TouchableOpacity

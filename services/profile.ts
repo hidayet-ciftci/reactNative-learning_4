@@ -1,6 +1,6 @@
-import { profile } from "@/app/profile";
 import { API_PROFILE } from "@/constants/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { Alert } from "react-native";
 export const fetchUserProfile = async () => {
   try {
@@ -8,16 +8,16 @@ export const fetchUserProfile = async () => {
     if (!token) {
       return null;
     }
-    const response = await fetch(API_PROFILE, {
-      method: "GET",
+    const response = await axios.get(API_PROFILE, {
+      // axios ile -> url , data , config
       headers: { Authorization: "Bearer " + token },
+      timeout: 10000,
     });
-    const data = await response.json();
-    if (!response.ok) return null;
+    const data = response.data;
     if (data.id) {
-      return data as profile;
+      return data;
     } else throw new Error("empty data");
-  } catch (error) {
+  } catch (error: any) {
     console.error("Profil Yükleme Hatası:", error);
     Alert.alert("Hata", "Veri çekilemedi.");
     return null;
