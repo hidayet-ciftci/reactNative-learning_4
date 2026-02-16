@@ -1,7 +1,9 @@
-import { handleSubmit } from "@/services/register";
+import CustomInput from "@/components/customInput";
+import { handleRegisterUser } from "@/services/register";
 import { router } from "expo-router";
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export interface user {
   firstName: string;
@@ -11,23 +13,18 @@ export interface user {
   password: string;
 }
 const LoginScreen = () => {
-  const [user, setUser] = useState<user>({
-    firstName: "",
-    lastName: "",
-    age: "",
-    username: "",
-    password: "",
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      username: "", // Varsayılan değerleri buraya yazıyoruz
+      password: "",
+      firstName: "",
+      lastName: "",
+      age: "",
+    },
   });
 
-  const handleRegister = async () => {
-    if (await handleSubmit(user)) {
-      setUser({
-        firstName: "",
-        lastName: "",
-        age: "",
-        username: "",
-        password: "",
-      });
+  const handleRegister = async (data: user) => {
+    if (await handleRegisterUser(data)) {
       router.push({
         pathname: "/profile",
       });
@@ -38,53 +35,59 @@ const LoginScreen = () => {
       <View style={styles.titleView}>
         <Text style={styles.title}>kayıt ol</Text>
       </View>
-      <TextInput
-        style={styles.input}
-        value={user.firstName}
-        onChangeText={(text) => {
-          setUser({ ...user, firstName: text });
+      <CustomInput
+        name="firstName"
+        placeholder="isim"
+        control={control}
+        rules={{
+          required: "isim zorunludur",
+          minLength: { value: 3, message: "en az 3 karakter olmalıdır" },
         }}
-        placeholder="Firstname"
       />
-      <TextInput
-        style={styles.input}
-        value={user.lastName}
-        onChangeText={(text) => {
-          setUser({ ...user, lastName: text });
+      <CustomInput
+        name="lastName"
+        placeholder="soy isim"
+        control={control}
+        rules={{
+          required: "Soy isim zorunludur",
+          minLength: { value: 3, message: "en az 3 karakter olmalıdır" },
         }}
-        placeholder="Lastname"
       />
-      <TextInput
+      <CustomInput
+        name="age"
+        placeholder="yaşınızı girini<"
+        control={control}
         keyboardType="numeric"
-        style={styles.input}
-        value={user.age}
-        onChangeText={(text) => {
-          const numericValue = text.replace(/[^0-9]/g, "");
-          setUser({
-            ...user,
-            age: numericValue,
-          });
+        rules={{
+          required: "yaş zorunludur",
+          min: { value: 18, message: "yaşınız 18'den büyük olmalıdır." },
+          max: { value: 99, message: "yaşınız 99'dan küçük olmalıdır." },
+          pattern: {
+            value: /^[0-9]+$/,
+            message: "Lütfen sadece sayı giriniz",
+          },
         }}
-        placeholder="age"
       />
-      <TextInput
-        style={styles.input}
-        value={user.username}
-        onChangeText={(text) => {
-          setUser({ ...user, username: text });
+      <CustomInput
+        name="username"
+        placeholder="Kullanıcı adını giriniz"
+        control={control}
+        rules={{
+          required: "Kullanıcı adı zorunludur",
+          minLength: { value: 3, message: "en az 3 karakter olmalıdır" },
         }}
-        placeholder="Username"
       />
-      <TextInput
-        style={styles.input}
-        value={user.password}
-        onChangeText={(text) => {
-          setUser({ ...user, password: text });
-        }}
-        placeholder="Şifre"
+      <CustomInput
+        name="password"
+        placeholder="şifreyi giriniz"
         secureTextEntry
+        control={control}
+        rules={{
+          required: "şifre zorunludur",
+          minLength: { value: 6, message: "en az 6 karakter olmalıdır" },
+        }}
       />
-      <Button title="Kayıt ol" onPress={handleRegister} />
+      <Button title="Kayıt ol" onPress={handleSubmit(handleRegister)} />
     </View>
   );
 };

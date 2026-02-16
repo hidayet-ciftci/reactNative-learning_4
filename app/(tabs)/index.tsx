@@ -1,21 +1,33 @@
+import CustomInput from "@/components/customInput";
 import { handleLogin } from "@/services/login";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import {
   Alert,
   Button,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 const LoginScreen = () => {
+  /*   
   const [username, setUsername] = useState<string>("emilys");
-  const [password, setPassword] = useState<string>("emilyspass");
+  const [password, setPassword] = useState<string>("emilyspass"); 
+  UseForm ile default değerleri aktarıyoruz
+  */
 
-  const checkLogin = async () => {
-    if (await handleLogin(username, password)) {
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      username: "emilys", // Varsayılan değerleri buraya yazıyoruz
+      password: "emilyspass",
+    },
+  });
+
+  const checkLogin = async (data: { username: string; password: string }) => {
+    if (await handleLogin(data.username, data.password)) {
+      // checkLogin'e form'dan gelen datayı gönderdik
       console.log("giriş yapıldı");
       router.replace("/profile");
     } else {
@@ -29,20 +41,26 @@ const LoginScreen = () => {
       <View style={styles.titleView}>
         <Text style={styles.title}>Giriş yap</Text>
       </View>
-      <TextInput
-        style={styles.input}
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
+      <CustomInput
+        name="username"
+        placeholder="Kullanici adi"
+        control={control}
+        rules={{
+          required: "kullanici adi zorunludur",
+          minLength: { value: 3, message: "en az 3 karakter olmalıdır" },
+        }}
       />
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
+      <CustomInput
+        name="password"
         placeholder="Şifre"
         secureTextEntry
+        control={control}
+        rules={{
+          required: "Şifre zorunludur",
+          minLength: { value: 6, message: "Şifre çok kısa" },
+        }}
       />
-      <Button title="Giriş Yap" onPress={checkLogin} />
+      <Button title="Giriş Yap" onPress={handleSubmit(checkLogin)} />
       <View style={styles.register}>
         <Text style={[{ color: "white" }]}>Hesabın yok mu? </Text>
         <TouchableOpacity

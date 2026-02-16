@@ -3,7 +3,7 @@ import { API_REGISTER, FAKE_TOKEN } from "@/constants/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export const handleSubmit = async (user: user) => {
+export const handleRegisterUser = async (user: user) => {
   try {
     const response = await axios.post(API_REGISTER, {
       ...user,
