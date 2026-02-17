@@ -1,40 +1,14 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { fetchUserProfile } from "@/services/profile";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserProfile } from "@/types/user";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Button,
-  Image,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, Image, ScrollView, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
-export interface profile {
-  id: number;
-  firstName: string;
-  lastName: string;
-  maidenName: string;
-  age: number;
-  gender: string;
-  email: string;
-  image: string;
-  phone: string;
-  username: string;
-  address: {
-    city: string;
-    country: string;
-  };
-  company: {
-    name: string;
-    title: string;
-  };
-}
 const ProfileScreen = () => {
   const router = useRouter();
-  const [user, setUser] = useState<profile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const handleProfile = async () => {
@@ -53,16 +27,6 @@ const ProfileScreen = () => {
     }
   };
 
-  const handleLogout = async () => {
-    Toast.show({
-      type: "info",
-      text1: "Çıkış yapılıyor",
-    });
-    await AsyncStorage.removeItem("user_Token");
-    setTimeout(() => {
-      router.replace("/");
-    }, 1000);
-  };
   useEffect(() => {
     handleProfile();
   }, []);
@@ -106,10 +70,6 @@ const ProfileScreen = () => {
               {user.address.city}, {user.address.country}
             </ThemedText>
           </ThemedView>
-
-          <ThemedView style={styles.logoutBtn}>
-            <Button title="Çıkış Yap" onPress={handleLogout} color="red" />
-          </ThemedView>
         </ScrollView>
       ) : (
         <ThemedText>Kullanıcı bilgisi bulunamadı.</ThemedText>
@@ -141,7 +101,6 @@ const styles = StyleSheet.create({
   },
   label: { fontSize: 14, fontWeight: "bold", marginTop: 10 },
   value: { fontSize: 16, marginBottom: 5 },
-  logoutBtn: { marginTop: 30 },
 });
 
 export default ProfileScreen;

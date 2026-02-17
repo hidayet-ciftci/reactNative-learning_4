@@ -1,14 +1,10 @@
 import { API_LOGIN } from "@/constants/config";
+import { loginUser } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-interface user {
-  username: string;
-  password: string;
-  expiresInMins: number;
-}
 export const handleLogin = async (username: string, password: string) => {
-  const user: user = {
+  const user: loginUser = {
     username: username,
     password: password,
     expiresInMins: 30,

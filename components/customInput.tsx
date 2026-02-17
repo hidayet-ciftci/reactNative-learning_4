@@ -1,21 +1,8 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import {
-  KeyboardTypeOptions,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
-interface CustomInputProps {
-  control: any;
-  name: string;
-  rules?: object;
-  placeholder?: string;
-  secureTextEntry?: boolean;
-  keyboardType?: KeyboardTypeOptions;
-}
+import { CustomInputProps } from "@/types/customInput";
 
 const CustomInput = ({
   control,
@@ -72,7 +59,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   input: {
-    height: 50, // Input yüksekliği
+    height: 50,
   },
   errorText: {
     color: "red",

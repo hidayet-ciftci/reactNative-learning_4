@@ -2,19 +2,13 @@ import CustomInput from "@/components/customInput";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { handleRegisterUser } from "@/services/register";
+import { user } from "@/types/auth";
 import { router } from "expo-router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 
-export interface user {
-  firstName: string;
-  lastName: string;
-  age: string;
-  username: string;
-  password: string;
-}
 const LoginScreen = () => {
   const { control, handleSubmit } = useForm({
     defaultValues: {

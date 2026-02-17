@@ -36,7 +36,7 @@ const LoginScreen = () => {
       });
       // Kullanıcı mesajı görsün diye TimeOut koyduk
       setTimeout(() => {
-        router.replace("/profile");
+        router.replace("/home");
       }, 1000);
     } else {
       console.log("wrong login");

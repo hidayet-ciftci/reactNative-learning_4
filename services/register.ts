@@ -1,5 +1,5 @@
-import { user } from "@/app/(auth)/register";
 import { API_REGISTER, FAKE_TOKEN } from "@/constants/config";
+import { user } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
