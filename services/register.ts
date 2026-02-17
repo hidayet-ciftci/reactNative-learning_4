@@ -11,7 +11,6 @@ export const handleRegisterUser = async (user: user) => {
       age: Number(user.age),
     });
     const data = response.data;
-    console.log(data); // to show response
     if (data.id) {
       await AsyncStorage.setItem("user_Token", FAKE_TOKEN);
       return true;

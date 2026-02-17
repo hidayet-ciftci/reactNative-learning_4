@@ -28,8 +28,8 @@ const LoginScreen = () => {
         text2: "giriş sayfasına yönlendirliyorsunuz",
       });
       setTimeout(() => {
-        router.push({
-          pathname: "/profile",
+        router.replace({
+          pathname: "/home",
         });
       }, 1000);
     } else {

@@ -25,7 +25,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile" />
       </Stack>
       <StatusBar style="auto" />
-      <Toast />
+      <Toast visibilityTime={1000} autoHide={true} />
     </ThemeProvider>
   );
 }
