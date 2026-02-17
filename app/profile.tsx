@@ -20,6 +20,7 @@ const ProfileScreen = () => {
       Toast.show({
         type: "error",
         text1: "kullanıcı hatası oluştu",
+        text2: "Giriş sayfasına yönlendiriliyor",
       }); // Router'ı component , içinde kullanmak best practice
       setTimeout(() => {
         router.replace("/");

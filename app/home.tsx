@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Button,
   Image,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -32,73 +33,102 @@ const HomeScreen = () => {
     }, 1000);
   };
 
-  useEffect(() => {
-    fetchUserProfile().then((data) => {
-      setUser(data);
+  const handleFetch = async () => {
+    const profileData = await fetchUserProfile();
+    if (profileData) {
+      setUser(profileData);
       setLoading(false);
-    });
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "kullanıcı hatası",
+        text2: "Giriş sayfasına yönlendiriliyor",
+      });
+      setTimeout(() => {
+        router.replace("/");
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    handleFetch();
   }, []);
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} />;
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <ThemedText style={styles.greeting}>Merhaba,</ThemedText>
-          <ThemedText type="title">{user?.firstName}</ThemedText>
-        </View>
-        <TouchableOpacity onPress={() => router.push("/profile")}>
-          <Image source={{ uri: user?.image }} style={styles.miniAvatar} />
-        </TouchableOpacity>
-      </View>
+      {user ? (
+        <ScrollView>
+          <View style={styles.header}>
+            <View>
+              <ThemedText style={styles.greeting}>Merhaba,</ThemedText>
+              <ThemedText type="title">{user.firstName}</ThemedText>
+            </View>
+            <TouchableOpacity onPress={() => router.push("/profile")}>
+              <Image
+                source={{
+                  uri: user.image || "https://via.placeholder.com/150",
+                }}
+                style={styles.miniAvatar}
+              />
+            </TouchableOpacity>
+          </View>
 
-      <View style={styles.statusCard}>
-        <ThemedText style={styles.cardLabel}>Pozisyon</ThemedText>
-        <ThemedText style={styles.cardTitle}>{user?.company.title}</ThemedText>
-        <ThemedText style={styles.cardSubtitle}>
-          {user?.company.department}
-        </ThemedText>
-      </View>
+          <View style={styles.statusCard}>
+            <ThemedText style={styles.cardLabel}>Pozisyon</ThemedText>
+            <ThemedText style={styles.cardTitle}>
+              {user.company.title}
+            </ThemedText>
+            <ThemedText style={styles.cardSubtitle}>
+              {user.company.department}
+            </ThemedText>
+          </View>
 
-      <View style={styles.infoRow}>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>29</ThemedText>
-          <ThemedText style={styles.boxLabel}>Yaş</ThemedText>
-        </View>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>3</ThemedText>
-          <ThemedText style={styles.boxLabel}>Proje</ThemedText>
-        </View>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>8.5</ThemedText>
-          <ThemedText style={styles.boxLabel}>Puan</ThemedText>
-        </View>
-      </View>
-      <View style={styles.infoRow}>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>143</ThemedText>
-          <ThemedText style={styles.boxLabel}>Satış sayısı</ThemedText>
-        </View>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>{user?.role}</ThemedText>
-          <ThemedText style={styles.boxLabel}>Rol</ThemedText>
-        </View>
-        <View style={styles.infoBox}>
-          <ThemedText style={styles.boxNumber}>{user?.bloodGroup}</ThemedText>
-          <ThemedText style={styles.boxLabel}>kan grubu</ThemedText>
-        </View>
-      </View>
-      <Button
-        title="Profili Görüntüle"
-        color="gray"
-        onPress={() => {
-          router.push("/profile");
-        }}
-      ></Button>
-      <ThemedView style={styles.logoutBtn}>
-        <Button title="Çıkış Yap" onPress={handleLogout} color="red" />
-      </ThemedView>
+          <View style={styles.infoRow}>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>29</ThemedText>
+              <ThemedText style={styles.boxLabel}>Yaş</ThemedText>
+            </View>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>3</ThemedText>
+              <ThemedText style={styles.boxLabel}>Proje</ThemedText>
+            </View>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>8.5</ThemedText>
+              <ThemedText style={styles.boxLabel}>Puan</ThemedText>
+            </View>
+          </View>
+          <View style={styles.infoRow}>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>143</ThemedText>
+              <ThemedText style={styles.boxLabel}>Satış sayısı</ThemedText>
+            </View>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>{user.role}</ThemedText>
+              <ThemedText style={styles.boxLabel}>Rol</ThemedText>
+            </View>
+            <View style={styles.infoBox}>
+              <ThemedText style={styles.boxNumber}>
+                {user.bloodGroup}
+              </ThemedText>
+              <ThemedText style={styles.boxLabel}>kan grubu</ThemedText>
+            </View>
+          </View>
+          <Button
+            title="Profili Görüntüle"
+            color="gray"
+            onPress={() => {
+              router.push("/profile");
+            }}
+          ></Button>
+          <ThemedView style={styles.logoutBtn}>
+            <Button title="Çıkış Yap" onPress={handleLogout} color="red" />
+          </ThemedView>
+        </ScrollView>
+      ) : (
+        <ThemedText>Kullanıcı bilgisi bulunamadı.</ThemedText>
+      )}
     </ThemedView>
   );
 };
