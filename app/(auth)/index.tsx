@@ -30,7 +30,7 @@ const LoginScreen = () => {
     },
   });
 
-  const checkIsLogedIn = async () => {
+  const checkIsLoggedIn = async () => {
     const token = await AsyncStorage.getItem("user_Token");
     if (token) {
       const isLogedIn = await fetchUserProfile();
@@ -42,7 +42,7 @@ const LoginScreen = () => {
   };
 
   useEffect(() => {
-    checkIsLogedIn();
+    checkIsLoggedIn();
   }, []);
 
   const checkLogin = async (data: { username: string; password: string }) => {
