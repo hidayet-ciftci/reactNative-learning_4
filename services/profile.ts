@@ -27,7 +27,7 @@ export const fetchUserProfile = async () => {
       text1: "Bir hata oluştu",
       text2: error?.message,
     });
-    console.error("Profil Yükleme Hatası:", error);
+    /* console.error("Profil Yükleme Hatası:", error); */
     return null;
   }
 };
