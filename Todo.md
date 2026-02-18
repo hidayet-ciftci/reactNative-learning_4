@@ -9,3 +9,5 @@
 9- sayfa / mobil tasarımı eklenecek , güzelleştirilecek ++
 
 10-dökümantasyon hazırlanacak.
+
+yup--
