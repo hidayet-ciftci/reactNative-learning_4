@@ -7,9 +7,9 @@
 5-error handling'de toast kullanımı ++
 1-View ,text , style gibiler mobile ile uyumlu light/dark modu entegre edilecek ++
 9- sayfa / mobil tasarımı eklenecek , güzelleştirilecek ++
-
+Kullanıcının Token'ı varsa otomatik giriş yapsın. ++
 10-dökümantasyon hazırlanacak.
 
 yup--
 
-(auth) / (tabs) yapısı içindeyken , url ? neye göre çalışır--
+(auth) / (tabs) yapısı içindeyken , url ? neye göre çalışır--> varsayılan olarak index arar yoksa, not.found.tsx'e yönlendirilir.
